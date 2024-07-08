@@ -10,9 +10,9 @@ async def discover():
 
 async def turn_on(plug: DeviceType.Plug):
     """Turn on a plug."""
-    asyncio.wait([plug.turn_on(), plug.update()])
+    await asyncio.wait([plug.turn_on(), plug.update()])
 
 
 async def turn_off(plug: DeviceType.Plug):
     """Turn off a plug."""
-    asyncio.wait([plug.turn_off(), plug.update()])
+    await asyncio.wait([plug.turn_off(), plug.update()])
