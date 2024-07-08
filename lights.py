@@ -6,14 +6,26 @@ from plugs import discover, turn_off, turn_on
 from weather import is_sunny
 
 
+LAT, LON = 40.7128, -74.0060
+NIGHT_START_HOUR = 1
+NIGHT_END_HOUR = 8
+
+
+def is_night() -> bool:
+    now = datetime.now()
+    if now.hour >= NIGHT_START_HOUR and now.hour < NIGHT_END_HOUR:
+        return True
+    return False
+
+    
 async def update(plugs) -> None:
     """Update step."""
-    lat, lon = 40.7128, -74.0060
+    
     print('Getting weather...')
-    _is_sunny = is_sunny(lat, lon)
+    _is_sunny = is_sunny(LAT, LON)
 
     for plug in plugs:
-        if _is_sunny:
+        if _is_sunny or is_night():
             print(f"{datetime.now()}: Turning off plugs")
             await turn_off(plug)
         else:
@@ -54,7 +66,7 @@ async def setup(hosts_filename) -> None:
 
 async def connect(host, username, password):
     """Connect to a single plug."""
-    return await Discover.discover_single(host, username=username, password=password)
+    return await Discover.discover_single(host)#, username=username, password=password)
 
 
 async def main(hosts_filename, kasa_username, kasa_password):
