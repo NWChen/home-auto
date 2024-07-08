@@ -64,12 +64,12 @@ async def setup(hosts_filename) -> None:
     return lines
 
 
-async def connect(host, username, password):
+async def connect(host):
     """Connect to a single plug."""
-    return await Discover.discover_single(host)#, username=username, password=password)
+    return await Discover.discover_single(host)
 
 
-async def main(hosts_filename, kasa_username, kasa_password):
+async def main(hosts_filename):
     """Main handler."""
     plugs = []
     with open(hosts_filename, "r", encoding="utf-8") as f:
@@ -83,7 +83,7 @@ async def main(hosts_filename, kasa_username, kasa_password):
             successfully_acted = False
             while not successfully_acted:
                 try:
-                    plug = await connect(host, kasa_username, kasa_password)
+                    plug = await connect(host)
                     successfully_acted = True
                 except Exception as e:
                     print(f"Encountered error {e}; trying again, then quitting")
@@ -95,6 +95,4 @@ async def main(hosts_filename, kasa_username, kasa_password):
 
 if __name__ == "__main__":
     HOSTS_FILENAME = "plugs.txt"
-    KASA_USERNAME = os.environ.get("KASA_USERNAME")
-    KASA_PASSWORD = os.environ.get("KASA_PASSWORD")
-    asyncio.run(main(HOSTS_FILENAME, KASA_USERNAME, KASA_PASSWORD))
+    asyncio.run(main(HOSTS_FILENAME))
