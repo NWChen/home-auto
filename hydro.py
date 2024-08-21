@@ -6,6 +6,7 @@ from kasa import Discover, exceptions
 from plugs import discover, turn_off, turn_on
 from weather import is_sunny
 
+DRY_RUN = False
 DUTY_CYCLE_ON_SECONDS = 10
 MAX_RETRIES = 3
 
@@ -24,10 +25,12 @@ async def cycle(plug) -> None:
         tries += 1
         try:
             log("PUMP ON")
-            await turn_on(plug)
+            if not DRY_RUN:
+                await turn_on(plug)
             time.sleep(DUTY_CYCLE_ON_SECONDS)
             log("PUMP OFF")
-            await turn_off(plug)
+            if not DRY_RUN:
+                await turn_off(plug)
             complete = True
         except Exception as e:
             print(f"Encountered failure: {e} trying again (attempt #{tries}/{MAX_RETRIES})")
